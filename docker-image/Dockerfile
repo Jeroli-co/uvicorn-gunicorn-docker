@@ -1,6 +1,8 @@
 FROM python:3.8-slim
 
-RUN pip install --no-cache-dir "uvicorn[standard]" gunicorn
+RUN apt-get update && \
+    apt-get install gcc -y && \
+    pip install --no-cache-dir "uvicorn[standard]" gunicorn
 
 COPY ./start.sh /start.sh
 RUN chmod +x /start.sh

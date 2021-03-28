@@ -1,3 +1,4 @@
+import importlib
 import json
 import multiprocessing
 import os
@@ -10,7 +11,7 @@ if max_workers_str:
 web_concurrency_str = os.getenv("WEB_CONCURRENCY", None)
 
 host = os.getenv("HOST", "0.0.0.0")
-port = os.getenv("PORT", "80")
+port = os.getenv("PORT", "9090")
 bind_env = os.getenv("BIND", None)
 use_loglevel = os.getenv("LOG_LEVEL", "info")
 if bind_env:
@@ -28,8 +29,12 @@ else:
     web_concurrency = max(int(default_web_concurrency), 2)
     if use_max_workers:
         web_concurrency = min(web_concurrency, use_max_workers)
-accesslog_var = os.getenv("ACCESS_LOG", "-")
-use_accesslog = accesslog_var or None
+try:
+    logger = importlib.import_module("server.core.logger")
+    logging_config = logger.LOGGING_CONFIG
+except (ModuleNotFoundError, AttributeError):
+    logging_config = None
+use_accesslog = os.getenv("ACCESS_LOG", None)
 errorlog_var = os.getenv("ERROR_LOG", "-")
 use_errorlog = errorlog_var or None
 graceful_timeout_str = os.getenv("GRACEFUL_TIMEOUT", "120")
@@ -38,6 +43,7 @@ keepalive_str = os.getenv("KEEP_ALIVE", "5")
 
 # Gunicorn config variables
 loglevel = use_loglevel
+logconfig_dict = logging_config
 workers = web_concurrency
 bind = use_bind
 errorlog = use_errorlog
@@ -46,7 +52,6 @@ accesslog = use_accesslog
 graceful_timeout = int(graceful_timeout_str)
 timeout = int(timeout_str)
 keepalive = int(keepalive_str)
-
 
 # For debugging and testing
 log_data = {

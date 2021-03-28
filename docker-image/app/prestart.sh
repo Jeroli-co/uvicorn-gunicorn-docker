@@ -1,5 +1,5 @@
 #! /usr/bin/env sh
 
 # Run migrations
-alembic upgrade head
+cd server && alembic upgrade head
 
