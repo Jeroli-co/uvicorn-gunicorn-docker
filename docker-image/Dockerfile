@@ -16,7 +16,6 @@ COPY ./app /app
 WORKDIR /app/
 
 ENV PYTHONPATH=/app
-ENV MAX_WORKERS=1
 
 # Run the start script, it will check for an /app/prestart.sh script (e.g. for migrations)
 # And then will start Gunicorn with Uvicorn
