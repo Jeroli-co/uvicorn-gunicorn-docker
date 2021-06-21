@@ -20,4 +20,4 @@ else
 fi
 
 # Start Gunicorn
-exec gunicorn -k "$WORKER_CLASS" -c "$GUNICORN_CONF" "$APP_MODULE"
+exec gunicorn --preload -k "$WORKER_CLASS" -c "$GUNICORN_CONF" "$APP_MODULE"
